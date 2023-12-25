@@ -2,7 +2,8 @@ const express = require('express')
 const route = express.Router()
 
 const xmlbuilder = require('xmlbuilder')
-const config = require('../../config/endpoints.json')
+
+const config = require('../../../endpoints.json')
 
 route.get('/', (req, res) => {
     //Create discovery URL using XMLBuilder
