@@ -20,6 +20,7 @@ route.get('/', (req, res) => {
 
     //Send full XML when completed
     res.header("Content-Type", "application/xml");
+    res.header("X-Dispatch", "Olive::Web::Discovery::V1::Endpoint-index");
     res.header("Connection", "close");
     res.send(discovery_xml).status(200);
     res.connection.end();
