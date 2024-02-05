@@ -3,7 +3,7 @@ const route = express.Router()
 
 const xmlbuilder = require('xmlbuilder')
 
-const config = require('../../../Aquamarine-Utils/endpoints.json')
+const config = require('../../../Aquamarine-Utils/config/endpoints.json')
 
 route.get('/', (req, res) => {
     //Create discovery URL using XMLBuilder
