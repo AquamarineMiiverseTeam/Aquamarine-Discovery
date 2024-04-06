@@ -15,6 +15,10 @@ const routes = require('./routes/index');
 
 app.use('/v1/endpoint', routes.API_DISCOVERY_ENDPOINT);
 
+app.get("/", (req, res) => {
+    res.redirect("/v1/endpoint")
+})
+
 //Set our app to listen on the config port
 app.listen(config_http.port, () => {
     console.log("[INFO] Listening on port %d".green, config_http.port);
