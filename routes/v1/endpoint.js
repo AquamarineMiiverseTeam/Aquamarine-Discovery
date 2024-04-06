@@ -14,25 +14,25 @@ route.get('/', async (req, res) => {
         const knex = require("knex")({
             client: 'mysql',
             connection: {
-              host : config.environments.account.database.database_host,
-              port : 3306,
-              user : config.environments.account.database.database_user,
-              password : config.environments.account.database.database_password,
-              database : config.environments.account.database.database
+                host: JSON.parse(process.env.ENVIRONMENT)['DATABASE_HOST'],
+                port: 3306,
+                user: JSON.parse(process.env.ENVIRONMENT)['DATABASE_USER'],
+                password: JSON.parse(process.env.ENVIRONMENT)['DATABASE_PASSWORD'],
+                database: JSON.parse(process.env.ENVIRONMENT)['ACCOUNT_DATABASE']
             }
         });
 
-        const account = (await knex("accounts").where(function() {
+        const account_environment = (await knex("accounts").select("environment").where(function () {
             this.where("wiiu_service_token", req.get("x-nintendo-servicetoken")).orWhere("3ds_service_token", req.get("x-nintendo-servicetoken"))
         }))[0]
 
-        if (!account) { environment = config.environments.live; return; }
+        if (!account_environment) { environment = config.environments.live; return; }
 
-        switch (account.environment) {
+        switch (account_environment.environment) {
             case 'testing':
                 environment = config.environments.testing
                 break;
-            
+
             case 'dev':
                 environment = config.environments.dev
                 break;
@@ -46,16 +46,16 @@ route.get('/', async (req, res) => {
         environment = config.environments.live
     }
 
-    const discovery_xml = xmlbuilder.create("result", {version : "1.0", encoding : "UTF-8"})
+    const discovery_xml = xmlbuilder.create("result", { version: "1.0", encoding: "UTF-8" })
         .ele('has_error', '0').up()
         .ele('version', '1').up()
         .ele('endpoint')
-            .ele('host', environment.endpoints.host_url).up()
-            .ele('api_host', environment.endpoints.api_url).up()
-            .ele('portal_host', environment.endpoints.portal_url).up()
-            .ele('n3ds_host', environment.endpoints.n3ds_url).up()
+        .ele('host', environment.endpoints.host_url).up()
+        .ele('api_host', environment.endpoints.api_url).up()
+        .ele('portal_host', environment.endpoints.portal_url).up()
+        .ele('n3ds_host', environment.endpoints.n3ds_url).up()
         .up()
-    .end({pretty : true, allowEmpty : true});
+        .end({ pretty: true, allowEmpty: true });
 
     //Send full XML when completed
     res.header("Content-Type", "application/xml");

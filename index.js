@@ -21,5 +21,7 @@ app.get("/", (req, res) => {
 
 //Set our app to listen on the config port
 app.listen(config_http.port, () => {
-    console.log("[INFO] Listening on port %d".green, config_http.port);
+    console.log("[INFO] Current Environment: %s. Listening on port %d.".green, 
+    JSON.parse(process.env.ENVIRONMENT)['ENV_NAME'], 
+    process.env.PORT);
 })
