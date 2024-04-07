@@ -4,6 +4,7 @@ const route = express.Router()
 const xmlbuilder = require('xmlbuilder')
 
 const config = require("../../../shared_config/environments.config.json")
+const db_con = require("../../../shared_config/database_con")
 
 route.get('/', async (req, res) => {
     //Create discovery URL using XMLBuilder
@@ -11,18 +12,7 @@ route.get('/', async (req, res) => {
     var environment;
 
     if (req.get("x-nintendo-servicetoken")) {
-        const knex = require("knex")({
-            client: 'mysql',
-            connection: {
-                host: JSON.parse(process.env.ENVIRONMENT)['DATABASE_HOST'],
-                port: 3306,
-                user: JSON.parse(process.env.ENVIRONMENT)['DATABASE_USER'],
-                password: JSON.parse(process.env.ENVIRONMENT)['DATABASE_PASSWORD'],
-                database: JSON.parse(process.env.ENVIRONMENT)['ACCOUNT_DATABASE']
-            }
-        });
-
-        const account_environment = (await knex("accounts").select("environment").where(function () {
+        const account_environment = (await db_con.account_db("account.accounts").select("environment").where(function () {
             this.where("wiiu_service_token", req.get("x-nintendo-servicetoken")).orWhere("3ds_service_token", req.get("x-nintendo-servicetoken"))
         }))[0]
 
