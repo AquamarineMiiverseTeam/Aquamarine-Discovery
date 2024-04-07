@@ -12,11 +12,12 @@ route.get('/', async (req, res) => {
     var environment;
 
     if (req.get("x-nintendo-servicetoken")) {
-        const account_environment = (await db_con.account_db("account.accounts").select("environment").where(function () {
-            this.where("wiiu_service_token", req.get("x-nintendo-servicetoken")).orWhere("3ds_service_token", req.get("x-nintendo-servicetoken"))
+
+        const account_environment = (await db_con.account_db("accounts").select("environment").where(function () {
+            this.where("wiiu_service_token", req.get("x-nintendo-servicetoken").slice(0, 42)).orWhere("3ds_service_token", req.get("x-nintendo-servicetoken").slice(0, 42))
         }))[0]
 
-        if (!account_environment) { environment = config.environments.live; return; }
+        if (!account_environment) { environment = config.environments.live; }
 
         switch (account_environment.environment) {
             case 'testing':
@@ -28,6 +29,8 @@ route.get('/', async (req, res) => {
                 break;
 
             case 'live':
+                environment = config.environments.live
+                break;
             default:
                 environment = config.environments.live
                 break;
