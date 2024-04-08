@@ -17,7 +17,7 @@ route.get('/', async (req, res) => {
             this.where("wiiu_service_token", req.get("x-nintendo-servicetoken").slice(0, 42)).orWhere("3ds_service_token", req.get("x-nintendo-servicetoken").slice(0, 42))
         }))[0]
 
-        if (!account_environment) { environment = config.environments.live; }
+        if (!account_environment || !account_environment.environment) { environment = config.environments.live; return; }
 
         switch (account_environment.environment) {
             case 'testing':
