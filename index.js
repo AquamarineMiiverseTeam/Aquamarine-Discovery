@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const colors = require('colors');
+const cors = require("./middleware/access_control")
 
 const app = express();
 
@@ -9,6 +10,7 @@ const config_http = require('./config/http.json');
 //Grab logger middleware and use it. (Logs all incoming HTTP/HTTPS requests)
 const logger = require('./middleware/log');
 app.use(logger);
+app.use(cors)
 
 //Grab index of all routes and set them in our express app
 const routes = require('./routes/index');
